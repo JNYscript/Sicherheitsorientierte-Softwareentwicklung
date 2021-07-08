@@ -8,5 +8,4 @@
 python main.py
 ```
 
-## Viewing The App
 
