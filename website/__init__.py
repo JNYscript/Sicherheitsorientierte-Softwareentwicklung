@@ -2,7 +2,7 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from os import path
 from flask_login import LoginManager
-
+import flask_monitoringdashboard as dashboard
 db = SQLAlchemy()
 DB_NAME = "database.db"
 
@@ -12,7 +12,7 @@ def create_app():
     app.config['SECRET_KEY'] = 'hjshjhdjah kjshkjdhjs'
     app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{DB_NAME}'
     db.init_app(app)
-
+    dashboard.bind(app)
     from .views import views
     from .auth import auth
 
@@ -31,6 +31,10 @@ def create_app():
     def load_user(id):
         return User.query.get(int(id))
 
+    @app.after_request
+    def apply_caching(response):
+        response.headers["X-Frame-Options"] = "SAMEORIGIN"
+        return response
     return app
 
 
